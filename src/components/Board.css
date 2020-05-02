@@ -1,0 +1,15 @@
+.board {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.gridItem {
+    margin: 2px;
+}
+
+.clear {
+    clear: both;
+    content: "";
+}
