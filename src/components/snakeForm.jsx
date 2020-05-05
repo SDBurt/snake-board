@@ -1,126 +1,107 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
 // Bootstrap
-import Form from 'react-bootstrap/Form'
-import Col from 'react-bootstrap/Col'
-import Row from 'react-bootstrap/Row'
-import Button from 'react-bootstrap/Button'
-import Card from 'react-bootstrap/Card'
+import Form from "react-bootstrap/Form";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
 
-import './snakeForm.css'
-import { addSnake } from '../redux/actions/dataActions'
+import "./snakeForm.css";
+import { store } from "../redux/store";
+import { addSnake } from "../redux/actions/dataActions";
+
+import { ADD_SNAKE } from "../redux/types";
 
 export class SnakeForm extends Component {
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            snakes: [{ "url": "", "name": "", "confirmed": false }]
-        }
-
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-
-
-    }
-
-    addSnake = (prevState) => {
-        console.log("newsnake?")
-        this.setState({ snakes: [...prevState.snakes, { "url": "", "name": "", "confirmed": false }] })
-    }
-
-    handleChange = (e) => {
-        console.log("Change?")
-
-        if (["url", "name", "confirmed"].includes(e.target.className)) {
-            let snakes = [...this.state.snakes]
-            snakes[e.target.dataset.id][e.target.className] = e.target.value
-            this.setState({ snakes }, () => console.log(this.state.snakes))
-        } else {
-            this.setState({ [e.target.name]: e.target.value });
-        }
-
+  constructor(props) {
+    super(props);
+    this.state = {
+      snake: { url: "", name: "", confirmed: false },
     };
 
-    handleSubmit(event) {
-        event.preventDefault();
-    }
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
 
-    renderForm = (snakes) => {
-        return (
-            <Card className='card'>
-                <Card.Header as="h5">Snakes</Card.Header>
-                <Card.Body>
+  handleChange = (event) => {
+    let fieldId = event.target.id;
+    let fieldValue = event.target.value;
+    this.setState({ snake: { ...this.state.snake, [fieldId]: fieldValue } });
+    console.log(this.state.snake);
+  };
 
-                    {snakes.map((snake, idx) => {
-                        let snakeId = `snake-${idx}`
-                        return (
-                            <div key={idx}>
-                                <Form>
-                                    <Form.Row>
-                                        <Col>
-                                            <Form.Group controlId={`form-${snakeId}-name`}>
-                                                <Form.Label>Name</Form.Label>
-                                                <Form.Control type="text" placeholder="snake name" value={snakes[idx].name} onChange={this.handleChange} />
-                                            </Form.Group>
-                                        </Col>
-                                        <Col>
-                                            <Form.Group controlId={`form-${snakeId}-url`}>
-                                                <Form.Label>URL</Form.Label>
-                                                <Form.Control type="text" placeholder="snake url" value={snakes[idx].url} onChange={this.handleChange} />
-                                            </Form.Group>
-                                        </Col>
-                                        <Col>
-                                            {
-                                                snake.confirmed
-                                                    ? <div className="state-green" />
-                                                    : <div className="state-red" />
-                                            }
+  handleSubmit = (event) => {
+    event.preventDefault();
+  };
 
-                                        </Col>
-                                    </Form.Row>
-                                </Form>
-                            </div>
-                        )
-                    })}
+  addSnakeToList = () => {
+    console.log(this.state.snake);
+    let snake = this.state.snake;
+    this.props.addSnake(snake);
+    this.setState({ snake: { url: "", name: "", confirmed: false } });
+  };
 
-                </Card.Body>
-                <Card.Footer>
-                    <Button onClick={this.addSnake}>Add Snake</Button>
+  render() {
+    // const { snakes, loading } = this.props.data;
 
-                </Card.Footer>
-            </Card>
-        )
-    }
+    let { snake } = this.state;
 
-    render() {
-
-        // const { snakes, loading } = this.props.data;
-        let { snakes } = this.state;
-        return (
-            <div>
-                {this.renderForm(snakes)}
-
-            </div>
-
-        )
-    }
+    return (
+      <Card className="card">
+        <Card.Header as="h5">Snakes</Card.Header>
+        <Card.Body>
+          <Form>
+            <Form.Row>
+              <Col>
+                <Form.Group controlId="name">
+                  <Form.Label>Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="snake name"
+                    value={snake.name}
+                    onChange={this.handleChange}
+                  />
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group controlId="url">
+                  <Form.Label>URL</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="snake url"
+                    value={snake.url}
+                    onChange={this.handleChange}
+                  />
+                </Form.Group>
+              </Col>
+              {/* <Col>
+                {snake.confirmed ? (
+                  <div className="state-green" />
+                ) : (
+                  <div className="state-red" />
+                )}
+              </Col> */}
+            </Form.Row>
+          </Form>
+        </Card.Body>
+        <Card.Footer>
+          <Button onClick={this.addSnakeToList}>Add Snake</Button>
+        </Card.Footer>
+      </Card>
+    );
+  }
 }
 
-
 SnakeForm.propTypes = {
-    data: PropTypes.object.isRequired,
-    addSnake: PropTypes.func.isRequired
+  data: PropTypes.object.isRequired,
+  addSnake: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-    data: state.data
+  data: state.data,
 });
 
-export default connect(
-    mapStateToProps,
-    { addSnake }
-)(SnakeForm)
+export default connect(mapStateToProps, { addSnake })(SnakeForm);
