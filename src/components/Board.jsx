@@ -101,7 +101,7 @@ export class Board extends Component {
 
     render() {
 
-        const { width, data } = this.props;
+        const { width } = this.props;
 
         const style = {
             display: 'inline-grid',

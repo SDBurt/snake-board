@@ -5,21 +5,17 @@ import { connect } from "react-redux";
 // Bootstrap
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 
 import "./snakeForm.css";
-import { store } from "../redux/store";
 import { addSnake } from "../redux/actions/dataActions";
-
-import { ADD_SNAKE } from "../redux/types";
 
 export class SnakeForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      snake: { url: "", name: "", confirmed: false },
+      snake: { url: "localhost:8080", name: "Snake", confirmed: false },
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -30,7 +26,6 @@ export class SnakeForm extends Component {
     let fieldId = event.target.id;
     let fieldValue = event.target.value;
     this.setState({ snake: { ...this.state.snake, [fieldId]: fieldValue } });
-    console.log(this.state.snake);
   };
 
   handleSubmit = (event) => {
@@ -38,11 +33,15 @@ export class SnakeForm extends Component {
   };
 
   addSnakeToList = () => {
-    console.log(this.state.snake);
     let snake = this.state.snake;
     this.props.addSnake(snake);
-    this.setState({ snake: { url: "", name: "", confirmed: false } });
+    this.setState({ snake: { url: "localhost:8080", name: "Snake", confirmed: false } });
   };
+
+  validateForm = (snake) => {
+    if (snake.name.length > 0 && snake.url.length > 0) return true;
+    else return false;
+  }
 
   render() {
     // const { snakes, loading } = this.props.data;
@@ -88,7 +87,7 @@ export class SnakeForm extends Component {
           </Form>
         </Card.Body>
         <Card.Footer>
-          <Button onClick={this.addSnakeToList}>Add Snake</Button>
+          <Button disabled={!this.validateForm(snake)} onClick={this.addSnakeToList}>Add Snake</Button>
         </Card.Footer>
       </Card>
     );

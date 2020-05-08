@@ -16,3 +16,6 @@ export const MARK_NOTIFICATIONS_READ = 'MARK_NOTIFICATIONS_READ';
 export const SET_SNAKES = 'SET_SNAKES';
 export const SET_SNAKE = 'SET_SNAKE';
 export const ADD_SNAKE = 'ADD_SNAKE';
+export const SET_BOARDSIZE = 'SET_BOARDSIZE';
+export const CREATE_GAME = 'CREATE_GAME';
+export const GAME_CREATED = 'GAME_CREATED';
